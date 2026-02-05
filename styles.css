@@ -1,0 +1,78 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background: #f4f4f4;
+  color: #111;
+}
+
+.app {
+  max-width: 540px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+h1 {
+  margin: 0 0 12px;
+}
+
+.status {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.status p {
+  margin: 0;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(20, 1fr);
+  gap: 1px;
+  background: #bbb;
+  border: 1px solid #aaa;
+}
+
+.cell {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #fff;
+}
+
+.cell.snake {
+  background: #2e7d32;
+}
+
+.cell.food {
+  background: #d32f2f;
+}
+
+.actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+button {
+  border: 1px solid #999;
+  background: #fff;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.mobile-controls {
+  margin-top: 12px;
+  display: grid;
+  gap: 8px;
+  max-width: 280px;
+}
+
+.middle-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
