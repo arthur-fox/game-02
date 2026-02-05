@@ -7,19 +7,24 @@
   };
 
   function createInitialState(options) {
-    const gridSize = options?.gridSize ?? 20;
-    const center = Math.floor(gridSize / 2);
+    const gridWidth = options?.gridWidth ?? options?.gridSize ?? 20;
+    const gridHeight = options?.gridHeight ?? options?.gridSize ?? 20;
+    const centerX = Math.floor(gridWidth / 2);
+    const centerY = Math.floor(gridHeight / 2);
     const snake = [
-      { x: center, y: center },
-      { x: center - 1, y: center },
-      { x: center - 2, y: center },
+      { x: centerX, y: centerY },
+      { x: centerX - 1, y: centerY },
+      { x: centerX - 2, y: centerY },
     ];
     return {
-      gridSize,
+      // Keep gridSize for backward compatibility with existing callers/tests.
+      gridSize: options?.gridSize ?? gridWidth,
+      gridWidth,
+      gridHeight,
       snake,
       direction: "right",
       nextDirection: "right",
-      food: spawnFood(snake, gridSize, options?.rng),
+      food: spawnFood(snake, gridWidth, gridHeight, options?.rng),
       score: 0,
       isGameOver: false,
       isPaused: false,
@@ -50,8 +55,8 @@
     return a.x === b.x && a.y === b.y;
   }
 
-  function outOfBounds(point, gridSize) {
-    return point.x < 0 || point.y < 0 || point.x >= gridSize || point.y >= gridSize;
+  function outOfBounds(point, gridWidth, gridHeight) {
+    return point.x < 0 || point.y < 0 || point.x >= gridWidth || point.y >= gridHeight;
   }
 
   function advanceState(state, rng) {
@@ -61,7 +66,7 @@
     const head = state.snake[0];
     const nextHead = { x: head.x + move.x, y: head.y + move.y };
 
-    if (outOfBounds(nextHead, state.gridSize)) {
+    if (outOfBounds(nextHead, state.gridWidth ?? state.gridSize, state.gridHeight ?? state.gridSize)) {
       return { ...state, direction: state.nextDirection, isGameOver: true };
     }
 
@@ -79,7 +84,14 @@
       };
     }
 
-    const nextFood = willEat ? spawnFood(nextSnake, state.gridSize, rng) : state.food;
+    const nextFood = willEat
+      ? spawnFood(
+        nextSnake,
+        state.gridWidth ?? state.gridSize,
+        state.gridHeight ?? state.gridSize,
+        rng
+      )
+      : state.food;
     return {
       ...state,
       direction: state.nextDirection,
@@ -89,11 +101,15 @@
     };
   }
 
-  function spawnFood(snake, gridSize, rngFn) {
+  function spawnFood(snake, gridWidthOrSize, gridHeightOrRng, maybeRngFn) {
+    const isSquareCall = typeof gridHeightOrRng === "function" || gridHeightOrRng === undefined;
+    const gridWidth = gridWidthOrSize;
+    const gridHeight = isSquareCall ? gridWidthOrSize : gridHeightOrRng;
+    const rngFn = isSquareCall ? gridHeightOrRng : maybeRngFn;
     const occupied = new Set(snake.map((p) => `${p.x},${p.y}`));
     const empty = [];
-    for (let y = 0; y < gridSize; y += 1) {
-      for (let x = 0; x < gridSize; x += 1) {
+    for (let y = 0; y < gridHeight; y += 1) {
+      for (let x = 0; x < gridWidth; x += 1) {
         const key = `${x},${y}`;
         if (!occupied.has(key)) empty.push({ x, y });
       }

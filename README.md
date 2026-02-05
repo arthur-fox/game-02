@@ -1,6 +1,7 @@
 # game-02
 
 Classic Snake built with plain HTML/CSS/JS.
+Now with a pixel-art styled board, snake, and apples.
 
 ## Run
 

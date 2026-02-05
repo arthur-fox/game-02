@@ -77,3 +77,15 @@ test("paused game does not advance until resumed", () => {
   state = advanceState(state, () => 0);
   assert.notDeepEqual(state.snake[0], pausedHead);
 });
+
+test("rectangular grids use width/height bounds correctly", () => {
+  let state = createInitialState({ gridWidth: 6, gridHeight: 3, rng: () => 0 });
+  state = {
+    ...state,
+    snake: [{ x: 5, y: 1 }, { x: 4, y: 1 }, { x: 3, y: 1 }],
+    direction: "right",
+    nextDirection: "right",
+  };
+  state = advanceState(state, () => 0);
+  assert.equal(state.isGameOver, true);
+});
