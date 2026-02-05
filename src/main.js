@@ -34,7 +34,8 @@
     if (!AudioCtx) return;
     audio.ctx = new AudioCtx();
     audio.mixGain = audio.ctx.createGain();
-    audio.mixGain.gain.value = 0.03;
+    // Keep this audible but still comfortable.
+    audio.mixGain.gain.value = 0.18;
     audio.mixGain.connect(audio.ctx.destination);
   }
 
@@ -45,11 +46,11 @@
 
     const osc = audio.ctx.createOscillator();
     const envelope = audio.ctx.createGain();
-    osc.type = "square";
+    osc.type = "triangle";
     osc.frequency.setValueAtTime(frequency, audio.ctx.currentTime);
 
     envelope.gain.setValueAtTime(0.0001, audio.ctx.currentTime);
-    envelope.gain.exponentialRampToValueAtTime(0.08, audio.ctx.currentTime + 0.01);
+    envelope.gain.exponentialRampToValueAtTime(0.22, audio.ctx.currentTime + 0.01);
     envelope.gain.exponentialRampToValueAtTime(0.0001, audio.ctx.currentTime + 0.22);
 
     osc.connect(envelope);
@@ -87,6 +88,10 @@
     ensureAudioReady();
     if (audio.ctx && audio.ctx.state === "suspended") {
       audio.ctx.resume().catch(() => {});
+    }
+    // Play a short confirmation blip on first user gesture.
+    if (audio.ctx && audio.mixGain && !audio.noteLoop && !isMuted) {
+      playNextNote();
     }
     updateMusicState();
   }
