@@ -19,6 +19,17 @@ h1 {
   margin: 0 0 12px;
 }
 
+.top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.top-row h1 {
+  margin: 0;
+}
+
 .status {
   display: flex;
   justify-content: space-between;

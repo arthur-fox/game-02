@@ -23,4 +23,5 @@ node --test
 - Arrow keys or `WASD`: move snake
 - `Space`: pause/resume
 - `R`: restart game
+- `Mute` button (top-right): mute/unmute music
 - On-screen buttons: mobile/touch controls
